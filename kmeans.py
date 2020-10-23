@@ -176,6 +176,8 @@ if __name__ == "__main__":
       centroids = find_new_centroid(cluster, data)
       iterate_count += 1
 
+  print(result)
+
   # menampilkan grafik
   show_sse_elbow_graph(result)
   show_clustering_graph(result,5)
