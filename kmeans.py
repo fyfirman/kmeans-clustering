@@ -4,7 +4,9 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Ambil data dan parsing data dari file CSV
+"""
+Ambil data dan parsing data dari file CSV
+"""
 def get_data_from_csv(filename):
   with open(filename) as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
@@ -19,6 +21,9 @@ def get_data_from_csv(filename):
       result.append(parsed_data)
     return result
 
+"""
+Generate random centroid
+"""
 def get_random_centroids(data, number_of_centroid):
   centroids = []
   while len(centroids) != number_of_centroid:
@@ -27,9 +32,15 @@ def get_random_centroids(data, number_of_centroid):
       centroids.append(random_data)
   return centroids
 
+"""
+Menghitung euclidean distance
+"""
 def euclidean_distance(point_a, point_b):
   return math.sqrt(pow(point_a[0]-point_b[0],2)+pow(point_a[1]-point_b[1],2))    
 
+"""
+Cari tahu titik `point` merupakan anggota cluster mana
+"""
 def find_members(point, centroids):
   # Initial value
   closest_centroid_index = 0
@@ -44,6 +55,9 @@ def find_members(point, centroids):
   
   return closest_centroid_index + 1
 
+"""
+Generate semua point anggota cluster mana
+"""
 def find_all_members(data, centroids, n_cluster):
     # Buat dictionary kosong untuk menyimpan anggota cluster
     cluster = {}
@@ -55,6 +69,9 @@ def find_all_members(data, centroids, n_cluster):
 
     return cluster
 
+"""
+Menghitung SSE
+"""
 def find_sse(cluster, centroids):
   result = 0
   for cluster_index in cluster:
@@ -63,6 +80,9 @@ def find_sse(cluster, centroids):
 
   return result
 
+"""
+Cari centroid baru (average dari anggota cluster)
+"""
 def find_new_centroid(cluster, data):
   new_centroids = []
   for cluster_index in cluster:
@@ -81,14 +101,9 @@ def find_new_centroid(cluster, data):
       new_centroids.append(random_data)
   return new_centroids
 
-def find_degrees(point_a, point_b, point_c):
-  a = [point_a,1]
-  b = [point_b,2]
-  c = [point_c,3]
-
-  ang = math.degrees(math.atan2(c[1]-b[1], c[0]-b[0]) - math.atan2(b[1]-a[1], b[0]-a[0]))
-  return ang + 360 if ang < 0 else ang
-
+"""
+Menampilkan plot elbow method
+"""
 def show_sse_elbow_graph(result):
   garis = [[],[]]
   for k in range(len(result)):
@@ -103,6 +118,10 @@ def show_sse_elbow_graph(result):
   plt.xticks(range(1,len(garis[0])+1))
   plt.plot(garis[0],garis[1])
 
+
+"""
+Menampilkan plot hasil clustering
+"""
 def show_clustering_graph(result, k):
   data_raw = []
 
@@ -129,6 +148,7 @@ if __name__ == "__main__":
   
   result = []
 
+  # Loop dari k=1-20 
   for n_cluster in range(1, 21):
     sse = None
     iterate_count = 0
@@ -140,6 +160,7 @@ if __name__ == "__main__":
     while True:
       cluster = find_all_members(data, centroids, n_cluster)
       
+      # pengecekan sse berubah atau tidak
       if sse == None:
         sse = find_sse(cluster, centroids)
       else:
@@ -151,8 +172,10 @@ if __name__ == "__main__":
         else:
           sse = new_sse
 
+      # cari centroid baru
       centroids = find_new_centroid(cluster, data)
       iterate_count += 1
 
+  # menampilkan grafik
   show_sse_elbow_graph(result)
   show_clustering_graph(result,5)
